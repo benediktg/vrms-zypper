@@ -1,0 +1,2 @@
+SUSE-Firmware
+SUSE-NonFree

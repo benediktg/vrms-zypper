@@ -27,17 +27,14 @@ class LicenseCheck:
     def __init__(self):
         tmp = shlex.split(shlex.quote('zypper licenses'))
         tmp = subprocess.Popen(tmp, shell=True, stdout=subprocess.PIPE).stdout
-        self.text = tmp
+        self.text = tmp.read().decode().split('\n', 2)[2].split('-\n')
         self.packages = list()
+        self.classification = dict()
+        self.free = open('licenses/free.txt').read().split('\n')
+        self.proprietary = open('licenses/proprietary.txt').read().split('\n')
 
-    def shorten(self):
-        tmp = self.text.read().decode()
-        tmp = tmp.split('\n', 2)[2]
-        self.text = tmp
-
-    def prepare(self):
-        tmp = self.text.split('-\n')
-        for i in tmp:
+    def parse(self):
+        for i in self.text:
             t1 = i.strip().split('\n')
             if len(t1) != 2:
                 continue
@@ -45,16 +42,36 @@ class LicenseCheck:
             lic = t1[1].split(': ')[1]
             t1 = (nam, lic)
             self.packages.append(t1)
+        for i in self.packages:
+            if i[1] not in self.classification:
+                self.classification[i[1]] = set([i[0]])
+            else:
+                self.classification[i[1]].add(i[0])
+
+    def printL(self, key):
+        print('{}:'.format(key))
+        for value in self.classification[key]:
+            print('\t{}'.format(value))
+        print()
+
+    def printDT(self):
+        for key in self.classification:
+            if (key not in self.free) or (key in self.proprietary):
+                for i in self.proprietary:
+                    if i in key:
+                        self.printL(key)
+                for i in self.free:
+                    if i in key:
+                        break
+                else:
+                    self.printL(key)
 
 
 def main():
     L = LicenseCheck()
-    L.shorten()
-    L.prepare()
-    print(len(L.packages))
+    L.parse()
+    L.printDT()
 
 if __name__ == '__main__':
-    try:
-        main()
-    except:
-        print('an error occured')
+    main()
+
