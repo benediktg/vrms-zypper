@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-<one line to give the program's name and a brief idea of what it does.>
+vrms-like functionality for zypper (openSUSE)
 Copyright (C) 2015  Benedikt Geißler <benedikt.geissler@openmailbox.org>
 
 This program is free software; you can redistribute it and/or modify
@@ -21,9 +21,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 '''
 import subprocess
 import shlex
+import argparse
 
 
 class LicenseCheck:
+    '''
+    contains methods and information to classify the packages
+    according to their license
+    '''
     def __init__(self):
         tmp = shlex.split(shlex.quote('zypper licenses'))
         tmp = subprocess.Popen(tmp, shell=True, stdout=subprocess.PIPE).stdout
@@ -34,6 +39,9 @@ class LicenseCheck:
         self.proprietary = open('licenses/proprietary.txt').read().split('\n')
 
     def parse(self):
+        '''
+        perform the classification
+        '''
         for i in self.text:
             t1 = i.strip().split('\n')
             if len(t1) != 2:
@@ -49,12 +57,18 @@ class LicenseCheck:
                 self.classification[i[1]].add(i[0])
 
     def printL(self, key):
+        '''
+        pretty-print the list behind key
+        '''
         print('{}:'.format(key))
         for value in self.classification[key]:
             print('\t{}'.format(value))
         print()
 
     def printDT(self):
+        '''
+        pretty-print the results of the classification
+        '''
         for key in self.classification:
             if (key not in self.free) or (key in self.proprietary):
                 for i in self.proprietary:
@@ -74,4 +88,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
