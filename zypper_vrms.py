@@ -36,7 +36,7 @@ class LicenseCheck:
         self.packages = list()
         self.classification = dict()
         self.free = open('licenses/free.txt').read().split('\n')
-        self.proprietary = open('licenses/proprietary.txt').read().split('\n')
+        self.proprietary = open('licenses/nonfree.txt').read().split('\n')
 
     def parse(self):
         '''
