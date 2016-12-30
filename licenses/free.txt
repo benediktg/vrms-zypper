@@ -306,6 +306,7 @@ ZPL-1.1
 ZPL-2.0
 ZPL-2.1
 SUSE-Public-Domain
+SUSE-QWT-1.0
 SUSE-TeX
 SUSE-CacertRoot
 GPL
@@ -315,3 +316,5 @@ BSD
 SUSE-SGI-FreeB-2.0
 SUSE-Permissive
 SUSE-Matplotlib
+SUSE-Hack-Open-Font-2.0
+SUSE-Bitstream-Vera
